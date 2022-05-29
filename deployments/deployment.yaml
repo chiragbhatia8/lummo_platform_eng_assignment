@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lummo-app
+  labels:
+    app: lummo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lummo
+  template:
+    metadata:
+      labels:
+        app: lummo
+    spec:
+      containers:
+        - image: chiragbhatia/lummo:latest
+          name: lummo
+          envFrom:
+          - secretRef:
+              name: lummo-secret
+          - configMapRef:
+              name: lummo-config
+          ports:
+            - containerPort: 8000
+              name: gunicorn

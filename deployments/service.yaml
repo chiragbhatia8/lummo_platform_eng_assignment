@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lummo
+  labels:
+    app: lummo
+spec:
+  type: ClusterIP
+  selector:
+    app: lummo
+  ports:
+    - port: 8000
+      targetPort: 8000
