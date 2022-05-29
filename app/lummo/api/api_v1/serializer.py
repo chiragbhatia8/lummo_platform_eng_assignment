@@ -7,9 +7,8 @@ class InMemorySerializer(serializers.Serializer):
 
     def create(self, validated_data):
         for key in validated_data.get('data'):
-            print(key, validated_data.get('data')[key])
             stores = cache.set(key, validated_data.get('data').get(key))
-            print(stores)
+            print(cache.get(key))
 
             return stores
 
@@ -29,10 +28,9 @@ class InMemorySearchSerializer(serializers.Serializer):
 
 
 class InMemoryRetriveSerializer(serializers.Serializer):
-    data = serializers.CharField()
 
-    # def create(self, validated_data):
-    #     return cache.get(validated_data.get('data'))
+    def create(self, validated_data, key):
+        return cache.get(key)
 
 
 

@@ -20,14 +20,11 @@ class MemorySearchView(views.APIView):
         prefix = request.query_params.get('prefix')
         suffix = request.query_params.get('suffix')
         if prefix and suffix:
-            return response.Response(cache.get(prefix + suffix))
+            return response.Response(cache.keys(f"{prefix} + {suffix}_*"))
         elif prefix:
-            if prefix.startswith == prefix:
-                return response.Response(cache.get(prefix))
-            else:
-                return response.Response(cache.get(prefix))
+            return response.Response(cache.keys(f"{prefix}_*"))
         elif suffix:
-            return response.Response(cache.get(suffix))
+            return response.Response(cache.keys(f"*_{suffix}"))
         else:
             return response.Response("No data")
 
@@ -36,4 +33,5 @@ class MemoryRetrieveView(views.APIView):
     def get(self, request, *args, **kwargs):
         serializer = InMemoryRetriveSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return response.Response(cache.get(serializer.validated_data.get('data')))
+        serializer = serializer.create(serializer.validated_data, self.kwargs.get('key'))
+        return response.Response(serializer)
