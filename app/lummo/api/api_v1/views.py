@@ -1,10 +1,9 @@
 
 from rest_framework import views, response
 
-from django.core.cache import cache
+from app.lummo.api.api_v1.serializer import InMemorySerializer, InMemoryRetriveSerializer
 
-from app.lummo.api.api_v1.serializer import InMemorySerializer, InMemorySearchSerializer, InMemoryRetriveSerializer
-
+from config.settings import redis
 class MemoryView(views.APIView):
 
     def post(self, request, *args, **kwargs):
@@ -15,16 +14,13 @@ class MemoryView(views.APIView):
 
 class MemorySearchView(views.APIView):
     def get(self, request, *args, **kwargs):
-        serializer = InMemorySearchSerializer(data=request.query_params)
-        serializer.is_valid(raise_exception=True)
         prefix = request.query_params.get('prefix')
         suffix = request.query_params.get('suffix')
-        if prefix and suffix:
-            return response.Response(cache.keys(f"{prefix} + {suffix}_*"))
-        elif prefix:
-            return response.Response(cache.keys(f"{prefix}_*"))
+
+        if prefix:
+            return response.Response(redis.keys(f"{prefix}*"))
         elif suffix:
-            return response.Response(cache.keys(f"*_{suffix}"))
+            return response.Response(redis.keys(f"*{suffix}"))
         else:
             return response.Response("No data")
 

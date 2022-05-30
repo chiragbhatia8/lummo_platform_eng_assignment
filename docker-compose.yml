@@ -19,12 +19,11 @@ services:
     env_file:
       - ./.env
     ports:
-      - "8001:8000"
-    command: python3 manage.py runserver 0.0.0.0:8001
+      - "8000:8000"
 
   postgres:
     image: postgres:12
-    container_name: lummo-postgres
+    container_name: lummo_postgres
     volumes:
       - local_postgres_data:/var/lib/postgresql/data:Z
       - local_postgres_data_backups:/backups:z

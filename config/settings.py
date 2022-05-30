@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import environ
+import redis
 
 env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -82,19 +83,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {"default": env.db("DATABASE_URL", default="postgres://postgres:idQhDbT92J7c@localhost:5432/lummo")}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgres://postgres:idQhDbT92J7c@lummo_postgres:5432/lummo")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-    }
-}
+redis = redis.Redis(host='lummo-redis', port=6379, db=0)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
